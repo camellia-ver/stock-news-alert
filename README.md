@@ -36,8 +36,8 @@ stock-news-alert/
 ## ⚙️ 동작 흐름
 
 ```
-1. 주기적으로 지정 종목의 현재 주가를 조회
-2. 전일 대비 변동률이 임계값(예: ±5%) 초과 여부 확인
+1. 장이 열리는 날 아침 지정 종목의 하루전과 이틀전의 종가를 조회
+2. 조회한 종가의 변동률이 임계값(예: ±5%) 초과 여부 확인
 3. 임계값 초과 시 해당 종목 관련 최신 뉴스 수집
 4. Discord로 뉴스 알림 전송
 ```
@@ -52,7 +52,7 @@ stock-news-alert/
 | 주가 조회 | [Alpha Vantage API](https://www.alphavantage.co/) |
 | 뉴스 수집 | [NewsAPI](https://newsapi.org/) |
 | 알림 전송 | Discord |
-| 스케줄링 | `schedule` 라이브러리 |
+| 스케줄링 | `discord.ext.tasks` |
 | 환경변수 | `python-dotenv` |
 
 ---
@@ -95,7 +95,6 @@ NEWS_API_KEY=your_news_api_key
 # config.py
 STOCK_SYMBOLS = ["TSLA", "AAPL", "005930.KS"]  # 모니터링 종목
 ALERT_THRESHOLD = 5  # 변동률 임계값 (%)
-CHECK_INTERVAL = 60  # 조회 주기 (초)
 ```
 
 ### 5. 실행
@@ -113,4 +112,5 @@ requests
 schedule
 python-dotenv
 newsapi-python
+discord
 ```
