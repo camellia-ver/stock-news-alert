@@ -109,8 +109,7 @@ python main.py
 
 ```
 requests
-schedule
 python-dotenv
 newsapi-python
-discord
+discord.py
 ```
