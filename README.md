@@ -51,7 +51,7 @@ stock-news-alert/
 | 언어 | Python 3.10+ |
 | 주가 조회 | [Alpha Vantage API](https://www.alphavantage.co/) |
 | 뉴스 수집 | [NewsAPI](https://newsapi.org/) |
-| 알림 전송 | Twilio(SMS) / Slack Webhook / SMTP |
+| 알림 전송 | Discord |
 | 스케줄링 | `schedule` 라이브러리 |
 | 환경변수 | `python-dotenv` |
 
