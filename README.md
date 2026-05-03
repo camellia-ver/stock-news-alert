@@ -64,3 +64,15 @@ stock-news-alert/
 | STOCK_API_KEY | Alpha Vantage API Key |
 | NEWS_API_KEY | NewsAPI Key |
 | DISCORD_WEBHOOK_URL | Discord 채널 웹훅 URL |
+
+## 📬 메시지 예시
+```
+주식명 🚨 주식가격 급변!
+
+📅 날짜 YYYY-MM-DD
+
+📰 뉴스
+    1. 뉴스1
+    2. 뉴스2
+    3. 뉴스3    
+```
