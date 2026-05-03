@@ -1,4 +1,4 @@
 requests
 python-dotenv
 newsapi-python
-discord.py
+alpha_vantage

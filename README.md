@@ -14,6 +14,9 @@
 
 ```
 stock-news-alert/
+├── .github/
+│   └── workflows/
+│       └── schedule.yml          # GitHub Actions 자동 실행 스케줄
 ├── main.py                 # 메인 실행 파일
 ├── config.py               # 설정값 관리 (종목, 임계값 등)
 ├── stock/
@@ -25,10 +28,9 @@ stock-news-alert/
 ├── notifier/
 │   ├── __init__.py
 │   └── sender.py           # 알림 전송 
-├── .env                    # 환경변수 (API Key 등, git 제외)
-├── .env.example            # 환경변수 예시 파일
 ├── requirements.txt        # 의존성 패키지 목록
-└── README.md
+├── README.md
+└── .gitignore
 ```
 
 ---
@@ -52,64 +54,13 @@ stock-news-alert/
 | 주가 조회 | [Alpha Vantage API](https://www.alphavantage.co/) |
 | 뉴스 수집 | [NewsAPI](https://newsapi.org/) |
 | 알림 전송 | Discord |
-| 스케줄링 | `discord.ext.tasks` |
-| 환경변수 | `python-dotenv` |
 
 ---
 
-## 🚀 시작하기
+## 🔒 GitHub Secrets 설정
 
-### 1. 저장소 클론
-
-```bash
-git clone https://github.com/your-username/stock-news-alert.git
-cd stock-news-alert
-```
-
-### 2. 의존성 설치
-
-```bash
-pip install -r requirements.txt
-```
-
-### 3. 환경변수 설정
-
-`.env.example`을 복사하여 `.env` 파일을 생성하고 값을 입력합니다.
-
-```bash
-cp .env.example .env
-```
-
-```env
-# .env.example
-
-STOCK_API_KEY=your_stock_api_key
-NEWS_API_KEY=your_news_api_key
-```
-
-### 4. 종목 및 임계값 설정
-
-`config.py`에서 모니터링할 종목과 변동률 임계값을 설정합니다.
-
-```python
-# config.py
-STOCK_SYMBOLS = ["TSLA", "AAPL", "005930.KS"]  # 모니터링 종목
-ALERT_THRESHOLD = 5  # 변동률 임계값 (%)
-```
-
-### 5. 실행
-
-```bash
-python main.py
-```
-
----
-
-## 📦 requirements.txt 예시
-
-```
-requests
-python-dotenv
-newsapi-python
-discord.py
-```
+| Secret 이름 | 설명 |
+|------|-----------|
+| STOCK_API_KEY | Alpha Vantage API Key |
+| NEWS_API_KEY | NewsAPI Key |
+| DISCORD_WEBHOOK_URL | Discord 채널 웹훅 URL |
