@@ -14,11 +14,8 @@
 
 ```
 stock-news-alert/
-├── .github/
-│   └── workflows/
-│       └── schedule.yml          # GitHub Actions 자동 실행 스케줄
-├── main.py                 # 메인 실행 파일
-├── config.py               # 설정값 관리 (종목, 임계값 등)
+├── main.py                  # 메인 실행 파일
+├── config.py               # .env에서 설정값 로드
 ├── stock/
 │   ├── __init__.py
 │   └── price_checker.py    # 주식 가격 조회 및 변동률 계산
@@ -27,8 +24,12 @@ stock-news-alert/
 │   └── news_fetcher.py     # 주식 관련 뉴스 수집
 ├── notifier/
 │   ├── __init__.py
-│   └── sender.py           # 알림 전송 
-├── requirements.txt        # 의존성 패키지 목록
+│   └── sender.py           # 알림 전송
+├── .env                    # API 키 (gitignore 처리)
+├── .env.example            # .env 템플릿 (공유용)
+├── config.py               # 설정값
+├── settings.py             # .env 로드
+├── requirements.txt
 ├── README.md
 └── .gitignore
 ```
@@ -56,14 +57,6 @@ stock-news-alert/
 | 알림 전송 | Discord |
 
 ---
-
-## 🔒 GitHub Secrets 설정
-
-| Secret 이름 | 설명 |
-|------|-----------|
-| STOCK_API_KEY | Alpha Vantage API Key |
-| NEWS_API_KEY | NewsAPI Key |
-| DISCORD_WEBHOOK_URL | Discord 채널 웹훅 URL |
 
 ## 📬 메시지 예시
 ```
