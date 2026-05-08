@@ -1,4 +1,5 @@
 from alpha_vantage.timeseries import TimeSeries
+from pykrx import stock
 from datetime import datetime, timedelta
 import pandas as pd
 import settings
@@ -11,57 +12,91 @@ class PriceChecker():
         self.symbols = config.STOCK_SYMBOLS
         self.threshold = config.ALERT_THRESHOLD
 
-    def get_close_price(self):
-        ts = TimeSeries(key= self.api_key, output_format='pandas')
-
+    def _get_krx_close_prices(self) -> dict:
+        '''pykrx로 국내 주식 종가 조회'''
         result = {}
+        today = datetime.now().strftime('%Y%m%d')
+        yesterday = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d')
 
-        for i, symbol in enumerate(self.symbols):
+        for i, symbol in enumerate(self.symbols.get('KRX', [])):
             try:
-                data, meta = ts.get_daily(symbol=symbol, outputsize='compact')
+                df = stock.get_market_ohlcv(yesterday, today, symbol)
+                
+                result[symbol] = {
+                    'yesterday_close':    df.iloc[-1]['종가'],
+                    'two_days_ago_close': df.iloc[-2]['종가']
+                }
+            except Exception as e:
+                print(f'{symbol} KRX 조회 실패: {e}')
+                result[symbol] = None
+            
+            if i > 0:
+                time.sleep(5)
+
+        return result
+
+    def _get_us_close_prieces(self) -> dict:
+        '''Alpha Vantage로 미국 주식 종가 조회'''
+        result = {}
+        ts = TimeSeries(key=self.api_key, output_format='pandas')
+
+        for i, symbol in enumerate(self.symbols.get('US', [])):
+            try:
+                data, _ = ts.get_daily(symbol=symbol, outputsize='compact')
                 data.index = pd.to_datetime(data.index)
                 data = data.sort_index(ascending=False)
 
                 result[symbol] = {
-                    'yesterday_close': data.iloc[0]['4. close'],
+                    'yesterday_close':    data.iloc[0]['4. close'],
                     'two_days_ago_close': data.iloc[1]['4. close']
                 }
             except Exception as e:
-                print(f'{symbol} 데이터 조회 실패: {e}')
+                print(f'{symbol} US 조회 실패: {e}')
                 result[symbol] = None
 
             if i > 0:
-                    time.sleep(12)
+                time.sleep(5)
 
         return result
 
-    def calc_change_rate(self, prev, curr):
+    def get_close_prices(self) -> dict:
+        '''KRX + US 통합 조회'''
+        return {
+            **self._get_krx_close_prices(),
+            **self._get_us_close_prieces()
+        }
+
+    @staticmethod
+    def _calc_change_rate(prev: float, curr: float) -> float:
         return ((curr - prev) / prev) * 100
 
-    def get_change_rate(self):
+    def get_change_rate(self) -> dict:
         close_prices = self.get_close_price()
-        change_rate = {}
+        result = {}
 
         for symbol, data in close_prices.items():
             if data is None:
-                change_rate[symbol] = None
+                result[symbol] = None
                 continue
 
-            yesterday = float(data['yesterday_close'])
-            two_day_ago = float(data['two_days_ago_close'])
+            curr = float(data['yesterday_close'])
+            prev = float(data['two_days_ago_close'])
 
-            change_rate[symbol] = {'change_rate': self.calc_change_rate(two_day_ago, yesterday)}
+            result[symbol] = {'change_rate': self._calc_change_rate(prev, curr)}
 
-        return change_rate
+        return result
     
     def is_above_volatility_threshold(self):
         change_rates = self.get_change_rate()
-
         result = {}
 
         for symbol, data in change_rates.items():
-            rate = data['change_rate'] if data else None
-            result[symbol] = {'is_alert_news': abs(rate) > self.threshold if rate is not None else False}
+            if data is None:
+                result[symbol] = {'is_alert': False}
+                continue
+
+            rate = data['change_rate']
+            result[symbol] = {'is_alert': abs(rate) >= self.threshold}
 
         return result
             
