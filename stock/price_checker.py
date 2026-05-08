@@ -40,4 +40,11 @@ class PriceChecker():
         return ((curr - prev) / prev) * 100
 
     def get_change_rate(self, symbols):
-        pass
+        close_prices = self.get_close_price(symbols)
+        change_rate = {}
+
+        for symbol, data in close_prices.items():
+            yesterday = float(data['yesterday_close'])
+            two_day_ago = float(data['two_days_ago_close'])
+
+            change_rate[symbol]['change_rate'] = self.calc_change_rate(two_day_ago, yesterday)
