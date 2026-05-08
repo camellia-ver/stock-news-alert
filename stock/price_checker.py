@@ -35,3 +35,9 @@ class PriceChecker():
                 result[symbol] = None
 
         return result
+
+    def calc_change_rate(prev, curr):
+        return ((curr - prev) / prev) * 100
+
+    def get_change_rate(self, symbols):
+        pass
