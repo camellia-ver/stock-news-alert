@@ -31,7 +31,7 @@ class PriceChecker():
                 result[symbol] = None
             
             if i > 0:
-                time.sleep(5)
+                time.sleep(12)
 
         return result
 
@@ -55,7 +55,7 @@ class PriceChecker():
                 result[symbol] = None
 
             if i > 0:
-                time.sleep(5)
+                time.sleep(12)
 
         return result
 

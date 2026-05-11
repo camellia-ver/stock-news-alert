@@ -53,7 +53,7 @@ stock-news-alert/
 |------|-----------|
 | 언어 | Python 3.10+ |
 | 주가 조회 | [Alpha Vantage API](https://www.alphavantage.co/) / [pykrx](https://github.com/sharebook-kr/pykrx) |
-| 뉴스 수집 | [NewsAPI](https://newsapi.org/) |
+| 뉴스 수집 | [NewsAPI](https://newsapi.org/) / [Naver News API](https://developers.naver.com/docs/serviceapi/search/news/news.md)|
 | 알림 전송 | Discord |
 
 ---
