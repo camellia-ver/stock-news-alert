@@ -6,9 +6,9 @@ from settings import ALPHA_VANTAGE_API_KEY
 import config
 import time
 
-class PriceChecker():
+class PriceChecker:
     def __init__(self):
-        self.api_key = ALPHA_VANTAGE_API_KEY
+        self._api_key = ALPHA_VANTAGE_API_KEY
         self.symbols = config.STOCK_SYMBOLS
         self.threshold = config.ALERT_THRESHOLD
 
@@ -38,7 +38,7 @@ class PriceChecker():
     def _get_us_close_prieces(self) -> dict:
         '''Alpha Vantage로 미국 주식 종가 조회'''
         result = {}
-        ts = TimeSeries(key=self.api_key, output_format='pandas')
+        ts = TimeSeries(key=self._api_key, output_format='pandas')
 
         for i, symbol in enumerate(self.symbols.get('US', [])):
             try:
@@ -71,6 +71,7 @@ class PriceChecker():
         return ((curr - prev) / prev) * 100
 
     def get_change_rate(self) -> dict:
+        '''각 종목의 임계값 계산'''
         close_prices = self.get_close_price()
         result = {}
 
@@ -86,7 +87,8 @@ class PriceChecker():
 
         return result
     
-    def is_above_volatility_threshold(self):
+    def is_above_volatility_threshold(self) -> dict:
+        '''각 종목의 임계값(예: ±5%) 초과 여부 반환'''
         change_rates = self.get_change_rate()
         result = {}
 
