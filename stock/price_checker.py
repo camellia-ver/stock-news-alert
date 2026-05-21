@@ -1,8 +1,10 @@
-from pykrx import stock
-from datetime import datetime, timedelta
-import config
 import time
+from datetime import datetime, timedelta
+
 import requests
+from pykrx import stock
+
+import config
 from settings import ALPHA_VANTAGE_API_KEY
 from utils.enums import Market
 
