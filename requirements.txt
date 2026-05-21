@@ -1,6 +1,5 @@
 requests
 python-dotenv
 newsapi-python
-alpha_vantage
 pykrx
 pandas

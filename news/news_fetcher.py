@@ -13,13 +13,13 @@ class NewsFetcher:
 
     def fetch_news_from_newsapi(self) -> dict:
         '''NewsApi를 사용하여 뉴스 수집'''
-        stock_data = self._price_checker.get_change_rate()
-        newsapi = NewsApiClient(api_key=self._news_api_key)
+        stock = self._price_checker.is_above_volatility_threshold(Market.US)
+        # newsapi = NewsApiClient(api_key=self._news_api_key)
         # top_headlines = newsapi.get_top_headlines(q=)
 
     def fetch_news_from_naver(self):
         '''Naver 검색 Api를 사용하여 뉴스 수집'''
-        pass
+        stock = self._price_checker.is_above_volatility_threshold(Market.KRX)
 
     def get_news(self) -> dict:
         '''수집한 뉴스들을 하나로 합쳐서 반환'''

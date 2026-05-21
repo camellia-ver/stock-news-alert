@@ -1,10 +1,12 @@
-from alpha_vantage.timeseries import TimeSeries
+import yfinance as yf
 from pykrx import stock
 from datetime import datetime, timedelta
 import pandas as pd
-from settings import ALPHA_VANTAGE_API_KEY
 import config
 import time
+import requests
+import json
+from settings import ALPHA_VANTAGE_API_KEY
 from utils.enums import Market
 
 class PriceChecker:
@@ -19,7 +21,7 @@ class PriceChecker:
         today = datetime.now().strftime('%Y%m%d')
         start_date = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d') # 공휴일 버퍼 포함
 
-        for i, symbol in enumerate(self.symbols.get('KRX', [])):
+        for symbol in self.symbols.get('KRX', []):
             try:
                 df = stock.get_market_ohlcv(start_date, today, symbol)
                 
@@ -32,33 +34,38 @@ class PriceChecker:
                 print(f'{symbol} KRX 조회 실패: {e}')
                 result[symbol] = None
             
-            if i < len(symbol) - 1:
-                time.sleep(12)
+            time.sleep(1)
 
         return result
 
-    def _get_us_close_prices(self) -> dict[str, dict : None]:
+    def _get_us_close_prices(self) -> dict[str, dict | None]:
         '''Alpha Vantage로 미국 주식 종가 조회'''
         result = {}
-        ts = TimeSeries(key=self._api_key, output_format='pandas')
 
-        for i, symbol in enumerate(self.symbols.get('US', [])):
+        for symbol in self.symbols.get('US', []):
             try:
-                data, _ = ts.get_daily(symbol=symbol, outputsize='compact')
-                data.index = pd.to_datetime(data.index)
-                data = data.sort_index(ascending=False)
+                url = (
+                    f'https://www.alphavantage.co/query'
+                    f'?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={self._api_key}'
+                )
+                r = requests.get(url, timeout=10)
+                r.raise_for_status()
+                json_data = r.json()
+
+                time_series = json_data['Time Series (Daily)']
+                latest_two = sorted(time_series.keys(), reverse=True)[:2]
+                yesterday, two_days_ago = latest_two
 
                 result[symbol] = {
-                    'yesterday_date': data.index[0].strftime('%Y-%m-%d'),
-                    'yesterday_close':    data.iloc[0]['4. close'],
-                    'two_days_ago_close': data.iloc[1]['4. close']
+                    'yesterday_date': yesterday,
+                    'yesterday_close': float(time_series[yesterday]['4. close']),
+                    'two_days_ago_close': float(time_series[two_days_ago]['4. close'])
                 }
             except Exception as e:
                 print(f'{symbol} US 조회 실패: {e}')
                 result[symbol] = None
-
-            if i > 0:
-                time.sleep(12)
+            
+            time.sleep(12)
 
         return result
 
@@ -89,9 +96,9 @@ class PriceChecker:
 
         return result
     
-    def is_above_volatility_threshold(self) -> dict:
+    def is_above_volatility_threshold(self, market) -> dict:
         '''각 종목의 임계값(예: ±5%) 초과 여부 반환'''
-        change_rates = self.get_change_rate()
+        change_rates = self.get_change_rate(market)
         result = {}
 
         for symbol, data in change_rates.items():
@@ -101,7 +108,7 @@ class PriceChecker:
 
             rate = data['change_rate']
             result[symbol] = {
-                'date': data['yesterday_date'],
+                'date': data['date'],
                 'is_alert': abs(rate) >= self.threshold
             }
 
