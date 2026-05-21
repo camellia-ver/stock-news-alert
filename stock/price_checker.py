@@ -5,6 +5,7 @@ import pandas as pd
 from settings import ALPHA_VANTAGE_API_KEY
 import config
 import time
+from utils.enums import Market
 
 class PriceChecker:
     def __init__(self):
@@ -61,13 +62,6 @@ class PriceChecker:
 
         return result
 
-    def get_close_prices(self) -> dict:
-        '''KRX + US 통합 조회'''
-        return {
-            **self._get_krx_close_prices(),
-            **self._get_us_close_prices()
-        }
-
     @staticmethod
     def _calc_change_rate(prev: float, curr: float) -> float:
         if prev == 0:
@@ -75,9 +69,9 @@ class PriceChecker:
         
         return ((curr - prev) / prev) * 100
 
-    def get_change_rate(self) -> dict:
+    def get_change_rate(self, market) -> dict:
         '''각 종목의 임계값 계산'''
-        close_prices = self.get_close_prices()
+        close_prices = self._get_krx_close_prices() if market == Market.KRX else self._get_us_close_prices()
         result = {}
 
         for symbol, data in close_prices.items():

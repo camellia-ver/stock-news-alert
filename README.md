@@ -25,6 +25,8 @@ stock-news-alert/
 ├── notifier/
 │   ├── __init__.py
 │   └── sender.py           # 알림 전송
+├── utils
+│   └── enums.py
 ├── .env                    # API 키 (gitignore 처리)
 ├── .env.example            # .env 템플릿 (공유용)
 ├── config.py               # 설정값
