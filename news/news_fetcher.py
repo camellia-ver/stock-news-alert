@@ -1,3 +1,4 @@
+from newsapi import NewsApiClient
 from typing import Optional
 from settings import NEWS_API_KEY, NAVER_APPLICATION_CLIENT_ID, NAVER_APPLICATION_CLIENT_SECRET
 from stock.price_checker import PriceChecker
@@ -11,7 +12,7 @@ class NewsFetcher:
 
     def fetch_news_from_newsapi(self) -> dict:
         '''NewsApi를 사용하여 뉴스 수집'''
-        pass
+        newsapi = NewsApiClient(api_key=self._news_api_key)
 
     def fetch_news_from_naver(self):
         '''Naver 검색 Api를 사용하여 뉴스 수집'''

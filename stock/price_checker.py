@@ -12,17 +12,18 @@ class PriceChecker:
         self.symbols = config.STOCK_SYMBOLS
         self.threshold = config.ALERT_THRESHOLD
 
-    def _get_krx_close_prices(self) -> dict:
+    def _get_krx_close_prices(self) -> dict[str, dict | None]:
         '''pykrx로 국내 주식 종가 조회'''
         result = {}
         today = datetime.now().strftime('%Y%m%d')
-        yesterday = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d')
+        start_date = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d') # 공휴일 버퍼 포함
 
         for i, symbol in enumerate(self.symbols.get('KRX', [])):
             try:
-                df = stock.get_market_ohlcv(yesterday, today, symbol)
+                df = stock.get_market_ohlcv(start_date, today, symbol)
                 
                 result[symbol] = {
+                    'yesterday_date': df.index[-1].strftime('%Y-%m-%d'),
                     'yesterday_close':    df.iloc[-1]['종가'],
                     'two_days_ago_close': df.iloc[-2]['종가']
                 }
@@ -30,12 +31,12 @@ class PriceChecker:
                 print(f'{symbol} KRX 조회 실패: {e}')
                 result[symbol] = None
             
-            if i > 0:
+            if i < len(symbol) - 1:
                 time.sleep(12)
 
         return result
 
-    def _get_us_close_prieces(self) -> dict:
+    def _get_us_close_prices(self) -> dict[str, dict : None]:
         '''Alpha Vantage로 미국 주식 종가 조회'''
         result = {}
         ts = TimeSeries(key=self._api_key, output_format='pandas')
@@ -47,6 +48,7 @@ class PriceChecker:
                 data = data.sort_index(ascending=False)
 
                 result[symbol] = {
+                    'yesterday_date': data.index[0].strftime('%Y-%m-%d'),
                     'yesterday_close':    data.iloc[0]['4. close'],
                     'two_days_ago_close': data.iloc[1]['4. close']
                 }
@@ -63,16 +65,19 @@ class PriceChecker:
         '''KRX + US 통합 조회'''
         return {
             **self._get_krx_close_prices(),
-            **self._get_us_close_prieces()
+            **self._get_us_close_prices()
         }
 
     @staticmethod
     def _calc_change_rate(prev: float, curr: float) -> float:
+        if prev == 0:
+            return 0.0
+        
         return ((curr - prev) / prev) * 100
 
     def get_change_rate(self) -> dict:
         '''각 종목의 임계값 계산'''
-        close_prices = self.get_close_price()
+        close_prices = self.get_close_prices()
         result = {}
 
         for symbol, data in close_prices.items():
@@ -83,7 +88,10 @@ class PriceChecker:
             curr = float(data['yesterday_close'])
             prev = float(data['two_days_ago_close'])
 
-            result[symbol] = {'change_rate': self._calc_change_rate(prev, curr)}
+            result[symbol] = {
+                'date': data['yesterday_date'],
+                'change_rate': self._calc_change_rate(prev, curr)
+            }
 
         return result
     
@@ -98,7 +106,10 @@ class PriceChecker:
                 continue
 
             rate = data['change_rate']
-            result[symbol] = {'is_alert': abs(rate) >= self.threshold}
+            result[symbol] = {
+                'date': data['yesterday_date'],
+                'is_alert': abs(rate) >= self.threshold
+            }
 
         return result
             
