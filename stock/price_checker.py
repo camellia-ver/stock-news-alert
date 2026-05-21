@@ -2,13 +2,13 @@ from alpha_vantage.timeseries import TimeSeries
 from pykrx import stock
 from datetime import datetime, timedelta
 import pandas as pd
-import settings
+from settings import ALPHA_VANTAGE_API_KEY
 import config
 import time
 
 class PriceChecker():
     def __init__(self):
-        self.api_key = settings.ALPHA_VANTAGE_API_KEY
+        self.api_key = ALPHA_VANTAGE_API_KEY
         self.symbols = config.STOCK_SYMBOLS
         self.threshold = config.ALERT_THRESHOLD
 
