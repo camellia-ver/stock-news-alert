@@ -1,11 +1,8 @@
-import yfinance as yf
 from pykrx import stock
 from datetime import datetime, timedelta
-import pandas as pd
 import config
 import time
 import requests
-import json
 from settings import ALPHA_VANTAGE_API_KEY
 from utils.enums import Market
 
@@ -21,18 +18,19 @@ class PriceChecker:
         today = datetime.now().strftime('%Y%m%d')
         start_date = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d') # 공휴일 버퍼 포함
 
-        for symbol in self.symbols.get('KRX', []):
+        for ticker in self.symbols.get('KRX', []):
             try:
-                df = stock.get_market_ohlcv(start_date, today, symbol)
+                df = stock.get_market_ohlcv(start_date, today, ticker)
                 
-                result[symbol] = {
+                name = stock.get_market_ticker_name(ticker)
+                result[name] = {
                     'yesterday_date': df.index[-1].strftime('%Y-%m-%d'),
                     'yesterday_close':    df.iloc[-1]['종가'],
                     'two_days_ago_close': df.iloc[-2]['종가']
                 }
             except Exception as e:
-                print(f'{symbol} KRX 조회 실패: {e}')
-                result[symbol] = None
+                print(f'{ticker} KRX 조회 실패: {e}')
+                result[name] = None
             
             time.sleep(1)
 
