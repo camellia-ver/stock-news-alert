@@ -1,5 +1,5 @@
 # config.py
-STOCK_SYMBOLS = {
+STOCK_TICKERS = {
     'KRX': ['005930', '000660'],
     'US': ['AAPL', 'NVDA']
 } # 모니터링 종목

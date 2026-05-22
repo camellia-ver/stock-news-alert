@@ -7,11 +7,12 @@ from pykrx import stock
 import config
 from settings import ALPHA_VANTAGE_API_KEY
 from utils.enums import Market
+from utils.symbol_map import SYMBOL_MAP
 
 class PriceChecker:
     def __init__(self):
         self._api_key = ALPHA_VANTAGE_API_KEY
-        self.symbols = config.STOCK_SYMBOLS
+        self.stock_tickers = config.STOCK_TICKERS
         self.threshold = config.ALERT_THRESHOLD
 
     def _get_krx_close_prices(self) -> dict[str, dict | None]:
@@ -20,7 +21,7 @@ class PriceChecker:
         today = datetime.now().strftime('%Y%m%d')
         start_date = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d') # 공휴일 버퍼 포함
 
-        for ticker in self.symbols.get('KRX', []):
+        for ticker in self.stock_tickers.get('KRX', []):
             try:
                 df = stock.get_market_ohlcv(start_date, today, ticker)
                 
@@ -31,7 +32,7 @@ class PriceChecker:
                     'two_days_ago_close': df.iloc[-2]['종가']
                 }
             except Exception as e:
-                print(f'{ticker} KRX 조회 실패: {e}')
+                print(f'{name} KRX 조회 실패: {e}')
                 result[name] = None
             
             time.sleep(1)
@@ -42,11 +43,11 @@ class PriceChecker:
         '''Alpha Vantage로 미국 주식 종가 조회'''
         result = {}
 
-        for symbol in self.symbols.get('US', []):
+        for ticker in self.stock_tickers.get('US', []):
             try:
                 url = (
                     f'https://www.alphavantage.co/query'
-                    f'?function=TIME_SERIES_DAILY&symbol={symbol}&apikey={self._api_key}'
+                    f'?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={self._api_key}'
                 )
                 r = requests.get(url, timeout=10)
                 r.raise_for_status()
@@ -56,14 +57,16 @@ class PriceChecker:
                 latest_two = sorted(time_series.keys(), reverse=True)[:2]
                 yesterday, two_days_ago = latest_two
 
-                result[symbol] = {
+                name = SYMBOL_MAP.get(ticker, ticker)
+
+                result[name] = {
                     'yesterday_date': yesterday,
                     'yesterday_close': float(time_series[yesterday]['4. close']),
                     'two_days_ago_close': float(time_series[two_days_ago]['4. close'])
                 }
             except Exception as e:
-                print(f'{symbol} US 조회 실패: {e}')
-                result[symbol] = None
+                print(f'{name} US 조회 실패: {e}')
+                result[name] = None
             
             time.sleep(12)
 

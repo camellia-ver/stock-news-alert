@@ -14,8 +14,19 @@ class NewsFetcher:
     def fetch_news_from_newsapi(self) -> dict:
         '''NewsApi를 사용하여 뉴스 수집'''
         stock = self._price_checker.is_above_volatility_threshold(Market.US)
-        # newsapi = NewsApiClient(api_key=self._news_api_key)
-        # top_headlines = newsapi.get_top_headlines(q=)
+        newsapi = NewsApiClient(api_key=self._news_api_key)
+        
+        for key, item in stock.items():
+            # key: AAPL
+            # item: {'date': '2026-05-21', 'is_alert': True}
+            if item:
+                top_headlines = newsapi.get_top_headlines(q=key,
+                                                      category='business',
+                                                      language='en',
+                                                      country='us')
+            
+                print(top_headlines)
+
 
     def fetch_news_from_naver(self):
         '''Naver 검색 Api를 사용하여 뉴스 수집'''
