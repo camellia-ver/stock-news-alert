@@ -1,3 +1,4 @@
+# news_fetcher.py
 import json
 import time
 from typing import Optional
