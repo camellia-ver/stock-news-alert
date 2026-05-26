@@ -7,7 +7,10 @@ from pykrx import stock
 import config
 from settings import ALPHA_VANTAGE_API_KEY
 from utils.enums import Market
+from utils.logger import get_logger
 from utils.symbol_map import SYMBOL_MAP
+
+logger = get_logger(__name__)
 
 class PriceChecker:
     def __init__(self):
@@ -31,8 +34,10 @@ class PriceChecker:
                     'yesterday_close':    df.iloc[-1]['종가'],
                     'two_days_ago_close': df.iloc[-2]['종가']
                 }
+
+                logger.debug("%s KRX 조회 완료 (종가: %s)", name, result[name]['yesterday_close'])
             except Exception as e:
-                print(f'{name} KRX 조회 실패: {e}')
+                logger.error("%s KRX 조회 실패: %s", name, e, exc_info=True)
                 result[name] = None
             
             time.sleep(1)
@@ -64,8 +69,10 @@ class PriceChecker:
                     'yesterday_close': float(time_series[yesterday]['4. close']),
                     'two_days_ago_close': float(time_series[two_days_ago]['4. close'])
                 }
+
+                logger.debug("%s US 조회 완료 (종가: %s)", name, result[name]['yesterday_close'])
             except Exception as e:
-                print(f'{name} US 조회 실패: {e}')
+                logger.error("%s US 조회 실패: %s", name, e, exc_info=True)
                 result[name] = None
             
             time.sleep(12)
@@ -110,10 +117,13 @@ class PriceChecker:
                 continue
 
             rate = data['change_rate']
-            result[symbol] = {
-                'date': data['date'],
-                'is_alert': abs(rate) >= self.threshold
-            }
+            is_alert = abs(rate) >= self.threshold
+            if is_alert:
+                logger.warning(
+                    "%s 변동률 임계값 초과: %.2f%% (기준: ±%.1f%%)",
+                    symbol, rate, self.threshold
+                )
+            result[symbol] = {'date': data['date'], 'is_alert': is_alert}
 
         return result
             
