@@ -1,5 +1,9 @@
-from newsapi import NewsApiClient
+import json
+import time
 from typing import Optional
+
+from newsapi import NewsApiClient
+
 from settings import NEWS_API_KEY, NAVER_APPLICATION_CLIENT_ID, NAVER_APPLICATION_CLIENT_SECRET
 from stock.price_checker import PriceChecker
 from utils.enums import Market
@@ -17,15 +21,31 @@ class NewsFetcher:
         newsapi = NewsApiClient(api_key=self._news_api_key)
         
         for key, item in stock.items():
-            # key: AAPL
-            # item: {'date': '2026-05-21', 'is_alert': True}
             if item:
                 top_headlines = newsapi.get_top_headlines(q=key,
                                                       category='business',
                                                       language='en',
                                                       country='us')
-            
-                print(top_headlines)
+                
+                if top_headlines['status'] != 'ok':
+                    raise Exception(top_headlines.get('message', 'API 오류'))
+                
+                articles = top_headlines["articles"]
+
+                simplified = [
+                    {
+                        "title": a["title"],
+                        "url": a["url"],
+                        "source": a["source"]["name"],          # 중첩 접근
+                        "published": a["publishedAt"][:10],     # 날짜만 자르기
+                        "image": a.get("urlToImage"),           # 없을 수 있는 필드
+                        "description": a.get("description", "설명 없음"),
+                    }
+                    for a in articles
+                ]
+
+                print(simplified)  
+                time.sleep(0.5)   
 
 
     def fetch_news_from_naver(self):
