@@ -1,11 +1,10 @@
 # news_fetcher.py
-import json
 import time
-import os
-import sys
 from datetime import datetime
 from typing import Optional
+import re
 
+from email.utils import parsedate_to_datetime
 import requests
 from newsapi import NewsApiClient
 
@@ -65,14 +64,31 @@ class NewsFetcher:
 
         return results
 
+    def strip_html(text: str) -> str:
+        return re.sub(r'<[^>]+>', '', text) if text else text
+    
+    def parse_date(pub_date: str | None) -> str | None:
+        if not pub_date:
+            return None
+        
+        try:
+            return parsedate_to_datetime(pub_date).date().isoformat()
+        except Exception:
+            return None
+
     def _fetch_news_from_naver(self):
         '''Naver 검색 Api를 사용하여 뉴스 수집'''
+        results: dict[str, list] = {}
         stock = self._price_checker.is_above_volatility_threshold(Market.KRX)
 
         url = 'https://openapi.naver.com/v1/search/news.json'
+        headers = {
+            'X-Naver-Client-Id': self._naver_client_id,
+            'X-Naver-Client-Secret': self._naver_client_secret
+        }
 
-        for key, item in stock.items():
-            if not item:
+        for key, stock_item in stock.items():
+            if not stock_item:
                 logger.info('Skipping %s: volatility threshold', key)
                 continue
 
@@ -83,18 +99,29 @@ class NewsFetcher:
                 'sort': 'sim'
             }
 
-            headers = {
-                'X-Naver-Client-Id': self._naver_client_id,
-                'X-Naver-Client-Secret': self._naver_client_secret
-            }
+            try:
+                response = requests.get(url, params=params, headers=headers, timeout=10)
+                response.raise_for_status()
+                json_data = response.json()
+            except requests.RequestException as e:
+                logger.warning('Failed to fetch news for %s: %s', key, e)
+                results[key] = []
+                continue
 
-            response = requests.get(url, params=params, headers=headers, timeout=10)
-            response.raise_for_status()
-
-            json_data = response.json()
-
-            print(json_data)
-
+            results[key] = [
+                {
+                    'title': self.strip_html(article['title','']),
+                    'url': article.get('originallink'),
+                    'source': None,
+                    'published': self.parse_date(article.get('pubDate')),
+                    'description': self.strip_html(article.get('description', ''))
+                }
+                for article in json_data.get('items', [])
+            ]
+            logger.debug('Fetched %d articles for %s', len(results[key]), key)
+            time.sleep(0.5)   
+        
+        return results
 
     def get_news(self) -> dict:
         '''수집한 뉴스들을 하나로 합쳐서 반환'''
