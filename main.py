@@ -1,3 +1,3 @@
 from news.news_fetcher import NewsFetcher
 
-NewsFetcher().fetch_news_from_newsapi()
+print(NewsFetcher()._fetch_news_from_naver())
