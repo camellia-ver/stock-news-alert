@@ -1,8 +1,8 @@
 # news_fetcher.py
 import time
+import re
 from datetime import datetime
 from typing import Optional
-import re
 
 from email.utils import parsedate_to_datetime
 import requests
@@ -12,6 +12,7 @@ from settings import NEWS_API_KEY, NAVER_APPLICATION_CLIENT_ID, NAVER_APPLICATIO
 from stock.price_checker import PriceChecker
 from utils.enums import Market
 from utils.logger import get_logger
+from utils.html_utils import strip_html
 
 logger = get_logger(__name__)
 
@@ -63,11 +64,8 @@ class NewsFetcher:
                 continue
 
         return results
-
-    def strip_html(text: str) -> str:
-        return re.sub(r'<[^>]+>', '', text) if text else text
     
-    def parse_date(pub_date: str | None) -> str | None:
+    def _parse_date(self, pub_date: str | None) -> str | None:
         if not pub_date:
             return None
         
@@ -110,11 +108,11 @@ class NewsFetcher:
 
             results[key] = [
                 {
-                    'title': self.strip_html(article['title','']),
+                    'title': strip_html(article.get('title','')),
                     'url': article.get('originallink'),
                     'source': None,
-                    'published': self.parse_date(article.get('pubDate')),
-                    'description': self.strip_html(article.get('description', ''))
+                    'published': self._parse_date(article.get('pubDate')),
+                    'description': strip_html(article.get('description', ''))
                 }
                 for article in json_data.get('items', [])
             ]
