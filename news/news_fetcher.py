@@ -126,4 +126,4 @@ class NewsFetcher:
         newsapi_result = self._fetch_news_from_newsapi()
         naver_result = self._fetch_news_from_naver()
         
-        return [*newsapi_result, *naver_result]
+        return {**newsapi_result, **naver_result}
