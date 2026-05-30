@@ -1,0 +1,64 @@
+2026-05-28 10:15:25 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): www.alphavantage.co:443
+2026-05-28 10:15:25 [DEBUG   ] urllib3.connectionpool — https://www.alphavantage.co:443 "GET /query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=MQYK8ZJXBGFEOWWR HTTP/1.1" 200 None
+2026-05-28 10:15:25 [DEBUG   ] stock.price_checker — Apple US 조회 완료 (종가: 310.85)
+2026-05-28 10:15:37 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): www.alphavantage.co:443
+2026-05-28 10:15:38 [DEBUG   ] urllib3.connectionpool — https://www.alphavantage.co:443 "GET /query?function=TIME_SERIES_DAILY&symbol=NVDA&apikey=MQYK8ZJXBGFEOWWR HTTP/1.1" 200 None
+2026-05-28 10:15:38 [DEBUG   ] stock.price_checker — NVIDIA US 조회 완료 (종가: 212.6)
+2026-05-28 10:15:50 [WARNING ] stock.price_checker — Apple 변동률 임계값 초과: 0.82% (기준: ±0.0%)
+2026-05-28 10:15:50 [WARNING ] stock.price_checker — NVIDIA 변동률 임계값 초과: -1.05% (기준: ±0.0%)
+2026-05-28 10:15:50 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): newsapi.org:443
+2026-05-28 10:15:50 [DEBUG   ] urllib3.connectionpool — https://newsapi.org:443 "GET /v2/top-headlines?q=Apple&language=en&country=us&category=business HTTP/1.1" 200 46
+2026-05-28 10:15:50 [DEBUG   ] news.news_fetcher — Fetched 0 articles for Apple
+2026-05-28 10:15:51 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): newsapi.org:443
+2026-05-28 10:15:51 [DEBUG   ] urllib3.connectionpool — https://newsapi.org:443 "GET /v2/top-headlines?q=NVIDIA&language=en&country=us&category=business HTTP/1.1" 200 None
+2026-05-28 10:15:51 [DEBUG   ] news.news_fetcher — Fetched 3 articles for NVIDIA
+2026-05-28 10:15:52 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): fchart.stock.naver.com:80
+2026-05-28 10:15:52 [DEBUG   ] urllib3.connectionpool — http://fchart.stock.naver.com:80 "GET /sise.nhn?symbol=005930&timeframe=day&count=9&requestType=0 HTTP/1.1" 200 832
+2026-05-28 10:15:52 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): data.krx.co.kr:80
+2026-05-28 10:15:57 [DEBUG   ] urllib3.connectionpool — http://data.krx.co.kr:80 "POST /comm/bldAttendant/getJsonData.cmd HTTP/1.1" 200 None
+2026-05-28 10:15:57 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): data.krx.co.kr:80
+2026-05-28 10:15:58 [DEBUG   ] urllib3.connectionpool — http://data.krx.co.kr:80 "POST /comm/bldAttendant/getJsonData.cmd HTTP/1.1" 200 None
+2026-05-28 10:15:58 [DEBUG   ] stock.price_checker — 삼성전자 KRX 조회 완료 (종가: 305000.0)
+2026-05-28 10:15:59 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): fchart.stock.naver.com:80
+2026-05-28 10:15:59 [DEBUG   ] urllib3.connectionpool — http://fchart.stock.naver.com:80 "GET /sise.nhn?symbol=000660&timeframe=day&count=9&requestType=0 HTTP/1.1" 200 862
+2026-05-28 10:15:59 [DEBUG   ] stock.price_checker — SK하이닉스 KRX 조회 완료 (종가: 2285000.0)
+2026-05-28 10:16:00 [WARNING ] stock.price_checker — 삼성전자 변동률 임계값 초과: -0.65% (기준: ±0.0%)
+2026-05-28 10:16:00 [WARNING ] stock.price_checker — SK하이닉스 변동률 임계값 초과: 1.87% (기준: ±0.0%)
+2026-05-28 10:16:00 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): openapi.naver.com:443
+2026-05-28 10:16:00 [DEBUG   ] urllib3.connectionpool — https://openapi.naver.com:443 "GET /v1/search/news.json?query=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&display=10&start=1&sort=sim HTTP/1.1" 200 2494
+2026-05-28 10:16:00 [DEBUG   ] news.news_fetcher — Fetched 10 articles for 삼성전자
+2026-05-28 10:16:00 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): openapi.naver.com:443
+2026-05-28 10:16:00 [DEBUG   ] urllib3.connectionpool — https://openapi.naver.com:443 "GET /v1/search/news.json?query=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&display=10&start=1&sort=sim HTTP/1.1" 200 2256
+2026-05-28 10:16:00 [DEBUG   ] news.news_fetcher — Fetched 10 articles for SK하이닉스
+2026-05-28 10:19:53 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): www.alphavantage.co:443
+2026-05-28 10:19:54 [DEBUG   ] urllib3.connectionpool — https://www.alphavantage.co:443 "GET /query?function=TIME_SERIES_DAILY&symbol=AAPL&apikey=MQYK8ZJXBGFEOWWR HTTP/1.1" 200 None
+2026-05-28 10:19:54 [DEBUG   ] stock.price_checker — Apple US 조회 완료 (종가: 310.85)
+2026-05-28 10:20:06 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): www.alphavantage.co:443
+2026-05-28 10:20:06 [DEBUG   ] urllib3.connectionpool — https://www.alphavantage.co:443 "GET /query?function=TIME_SERIES_DAILY&symbol=NVDA&apikey=MQYK8ZJXBGFEOWWR HTTP/1.1" 200 None
+2026-05-28 10:20:06 [DEBUG   ] stock.price_checker — NVIDIA US 조회 완료 (종가: 212.6)
+2026-05-28 10:20:18 [WARNING ] stock.price_checker — Apple 변동률 임계값 초과: 0.82% (기준: ±0.0%)
+2026-05-28 10:20:18 [WARNING ] stock.price_checker — NVIDIA 변동률 임계값 초과: -1.05% (기준: ±0.0%)
+2026-05-28 10:20:18 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): newsapi.org:443
+2026-05-28 10:20:19 [DEBUG   ] urllib3.connectionpool — https://newsapi.org:443 "GET /v2/top-headlines?q=Apple&language=en&country=us&category=business HTTP/1.1" 200 46
+2026-05-28 10:20:19 [DEBUG   ] news.news_fetcher — Fetched 0 articles for Apple
+2026-05-28 10:20:19 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): newsapi.org:443
+2026-05-28 10:20:20 [DEBUG   ] urllib3.connectionpool — https://newsapi.org:443 "GET /v2/top-headlines?q=NVIDIA&language=en&country=us&category=business HTTP/1.1" 200 None
+2026-05-28 10:20:20 [DEBUG   ] news.news_fetcher — Fetched 3 articles for NVIDIA
+2026-05-28 10:20:20 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): fchart.stock.naver.com:80
+2026-05-28 10:20:20 [DEBUG   ] urllib3.connectionpool — http://fchart.stock.naver.com:80 "GET /sise.nhn?symbol=005930&timeframe=day&count=9&requestType=0 HTTP/1.1" 200 832
+2026-05-28 10:20:20 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): data.krx.co.kr:80
+2026-05-28 10:20:26 [DEBUG   ] urllib3.connectionpool — http://data.krx.co.kr:80 "POST /comm/bldAttendant/getJsonData.cmd HTTP/1.1" 200 None
+2026-05-28 10:20:26 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): data.krx.co.kr:80
+2026-05-28 10:20:27 [DEBUG   ] urllib3.connectionpool — http://data.krx.co.kr:80 "POST /comm/bldAttendant/getJsonData.cmd HTTP/1.1" 200 None
+2026-05-28 10:20:27 [DEBUG   ] stock.price_checker — 삼성전자 KRX 조회 완료 (종가: 304250.0)
+2026-05-28 10:20:28 [DEBUG   ] urllib3.connectionpool — Starting new HTTP connection (1): fchart.stock.naver.com:80
+2026-05-28 10:20:28 [DEBUG   ] urllib3.connectionpool — http://fchart.stock.naver.com:80 "GET /sise.nhn?symbol=000660&timeframe=day&count=9&requestType=0 HTTP/1.1" 200 862
+2026-05-28 10:20:28 [DEBUG   ] stock.price_checker — SK하이닉스 KRX 조회 완료 (종가: 2279000.0)
+2026-05-28 10:20:29 [WARNING ] stock.price_checker — 삼성전자 변동률 임계값 초과: -0.90% (기준: ±0.0%)
+2026-05-28 10:20:29 [WARNING ] stock.price_checker — SK하이닉스 변동률 임계값 초과: 1.60% (기준: ±0.0%)
+2026-05-28 10:20:29 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): openapi.naver.com:443
+2026-05-28 10:20:29 [DEBUG   ] urllib3.connectionpool — https://openapi.naver.com:443 "GET /v1/search/news.json?query=%EC%82%BC%EC%84%B1%EC%A0%84%EC%9E%90&display=10&start=1&sort=sim HTTP/1.1" 200 2494
+2026-05-28 10:20:29 [DEBUG   ] news.news_fetcher — Fetched 10 articles for 삼성전자
+2026-05-28 10:20:30 [DEBUG   ] urllib3.connectionpool — Starting new HTTPS connection (1): openapi.naver.com:443
+2026-05-28 10:20:30 [DEBUG   ] urllib3.connectionpool — https://openapi.naver.com:443 "GET /v1/search/news.json?query=SK%ED%95%98%EC%9D%B4%EB%8B%89%EC%8A%A4&display=10&start=1&sort=sim HTTP/1.1" 200 2284
+2026-05-28 10:20:30 [DEBUG   ] news.news_fetcher — Fetched 10 articles for SK하이닉스

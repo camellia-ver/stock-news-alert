@@ -30,6 +30,7 @@ stock-news-alert/
 │   └── html_utils.py
 │   └── logger.py
 │   └── symbol_map.py
+│   └── message_formatter.py
 ├── .env                    # API 키 (gitignore 처리)
 ├── .env.example            # .env 템플릿 (공유용)
 ├── config.py               # 설정값
