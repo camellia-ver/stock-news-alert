@@ -20,27 +20,50 @@ class PriceChecker:
         self.threshold = config.ALERT_THRESHOLD
 
     def _get_krx_close_prices(self) -> dict[str, dict | None]:
-        '''pykrx로 국내 주식 종가 조회'''
         result = {}
-        today = datetime.now().strftime('%Y%m%d')
-        start_date = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d') # 공휴일 버퍼 포함
 
-        for ticker in self.stock_tickers.get('KRX', []):
+        today = datetime.now().strftime('%Y%m%d')
+        start_date = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d')
+
+        for ticker, name in self.stock_tickers.get('KRX', {}).items():
             try:
-                df = stock.get_market_ohlcv(start_date, today, ticker)
-                
-                name = stock.get_market_ticker_name(ticker)
+                df = stock.get_market_ohlcv(
+                    start_date,
+                    today,
+                    ticker
+                )
+
+                if df.empty:
+                    logger.warning("[%s] 데이터가 없습니다.", ticker)
+                    continue
+
+                if len(df) < 2:
+                    logger.warning("[%s] 데이터가 부족합니다.", ticker)
+                    continue
+
                 result[name] = {
                     'yesterday_date': df.index[-1].strftime('%Y-%m-%d'),
-                    'yesterday_close':    df.iloc[-1]['종가'],
+                    'yesterday_close': df.iloc[-1]['종가'],
                     'two_days_ago_close': df.iloc[-2]['종가']
                 }
 
-                logger.debug("%s KRX 조회 완료 (종가: %s)", name, result[name]['yesterday_close'])
+                logger.debug(
+                    "%s KRX 조회 완료 (종가: %s)",
+                    name,
+                    result[name]['yesterday_close']
+                )
+
             except Exception as e:
-                logger.error("%s KRX 조회 실패: %s", name, e, exc_info=True)
+                logger.error(
+                    "%s(%s) KRX 조회 실패: %s",
+                    name,
+                    ticker,
+                    e,
+                    exc_info=True
+                )
+
                 result[name] = None
-            
+
             time.sleep(1)
 
         return result
