@@ -1,6 +1,0 @@
-2026-05-26 12:33:31 [DEBUG   ] stock.price_checker — Apple US 조회 완료 (종가: 308.82)
-2026-05-26 12:33:44 [DEBUG   ] stock.price_checker — NVIDIA US 조회 완료 (종가: 215.33)
-2026-05-26 12:33:56 [WARNING ] stock.price_checker — Apple 변동률 임계값 초과: 1.26% (기준: ±0.0%)
-2026-05-26 12:33:56 [WARNING ] stock.price_checker — NVIDIA 변동률 임계값 초과: -1.90% (기준: ±0.0%)
-2026-05-26 12:33:56 [DEBUG   ] news.news_fetcher — Fetched 1 articles for Apple
-2026-05-26 12:33:57 [DEBUG   ] news.news_fetcher — Fetched 1 articles for NVIDIA
