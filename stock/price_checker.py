@@ -9,7 +9,6 @@ import config
 from settings import ALPHA_VANTAGE_API_KEY
 from utils.enums import Market
 from utils.logger import get_logger
-from utils.symbol_map import SYMBOL_MAP
 
 logger = get_logger(__name__)
 
@@ -72,7 +71,7 @@ class PriceChecker:
         '''Alpha Vantage로 미국 주식 종가 조회'''
         result = {}
 
-        for ticker in self.stock_tickers.get('US', []):
+        for ticker, name in self.stock_tickers.get('US', {}).items():
             try:
                 url = (
                     f'https://www.alphavantage.co/query'
@@ -85,8 +84,6 @@ class PriceChecker:
                 time_series = json_data['Time Series (Daily)']
                 latest_two = sorted(time_series.keys(), reverse=True)[:2]
                 yesterday, two_days_ago = latest_two
-
-                name = SYMBOL_MAP.get(ticker, ticker)
 
                 result[name] = {
                     'yesterday_date': yesterday,
@@ -147,7 +144,10 @@ class PriceChecker:
                     "%s 변동률 임계값 초과: %.2f%% (기준: ±%.1f%%)",
                     symbol, rate, self.threshold
                 )
-            result[symbol] = {'date': data['date'], 'is_alert': is_alert}
+            result[symbol] = {
+                'date': data['date'],
+                'rate': rate,
+                'is_alert': is_alert}
 
         return result
             

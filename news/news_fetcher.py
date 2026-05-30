@@ -45,18 +45,25 @@ class NewsFetcher:
                     continue
                     
                 articles = top_headlines.get("articles", [])
-                results[key] = [
-                    {
-                        "title": a.get("title"),
-                        "url": a.get("url"),
-                        "source": a.get("source", {}).get("name"),
-                        "published": datetime.fromisoformat(
-                            a["publishedAt"].replace("Z", "+00:00")
-                        ).date().isoformat() if a.get("publishedAt") else None,
-                        "description": a.get("description", "설명 없음"),
-                    }
-                    for a in articles
-                ]
+                results[key] = {
+                     "meta": {
+                        "date": item["date"],
+                        "rate": item["rate"],
+                    },
+                    "articles": [
+                        {
+                            "title": a.get("title"),
+                            "url": a.get("url"),
+                            "source": a.get("source", {}).get("name"),
+                            "published": datetime.fromisoformat(
+                                a["publishedAt"].replace("Z", "+00:00")
+                            ).date().isoformat() if a.get("publishedAt") else None,
+                            "description": a.get("description", "설명 없음"),
+                        }
+                        for a in articles
+                    ]
+                }
+                
                 logger.debug('Fetched %d articles for %s', len(results[key]), key)
                 time.sleep(0.5)   
             except Exception as e:
@@ -85,8 +92,8 @@ class NewsFetcher:
             'X-Naver-Client-Secret': self._naver_client_secret
         }
 
-        for key, stock_item in stock.items():
-            if not stock_item:
+        for key, item in stock.items():
+            if not item:
                 logger.info('Skipping %s: volatility threshold', key)
                 continue
 
@@ -106,7 +113,12 @@ class NewsFetcher:
                 results[key] = []
                 continue
 
-            results[key] = [
+            results[key] = {
+                "meta": {
+                    "date": item["date"],
+                    "rate": item["rate"],
+                },
+                "articles":[ 
                 {
                     'title': strip_html(article.get('title','')),
                     'url': article.get('originallink'),
@@ -115,7 +127,8 @@ class NewsFetcher:
                     'description': strip_html(article.get('description', ''))
                 }
                 for article in json_data.get('items', [])
-            ]
+                ]
+            }
             logger.debug('Fetched %d articles for %s', len(results[key]), key)
             time.sleep(0.5)   
         
