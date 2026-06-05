@@ -5,7 +5,7 @@ def format_message(symbol, data):
     msg = []
     msg.append(f"📊 {symbol}")
     msg.append(f"- 날짜: {meta['date']}")
-    msg.append(f"- 변동률: {meta['rate']}%")
+    msg.append(f"- 변동률: {round(meta['rate'])}%")
     msg.append("")
     msg.append("📰 주요 뉴스")
 
