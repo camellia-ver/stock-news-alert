@@ -30,7 +30,6 @@ stock-news-alert/
 │   └── enums.py
 │   └── html_utils.py
 │   └── logger.py
-│   └── symbol_map.py
 │   └── message_formatter.py
 ├── gui_config.py           # GUI 설정 편집기 (선택 실행)
 ├── .env                    # API 키 (gitignore 처리)
