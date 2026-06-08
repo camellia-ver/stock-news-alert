@@ -1,5 +1,7 @@
 # 📈 stock-news-alert
 
+🚧 GUI 설정 편집기 개발 중
+
 > 특정 주식 가격 변동에 따라 해당 주식 관련 뉴스를 자동으로 전송하는 알림 서비스
 
 ---
@@ -51,7 +53,27 @@ stock-news-alert/
 3. 임계값 초과 시 해당 종목 관련 최신 뉴스 수집
 4. Discord로 뉴스 알림 전송
 ```
+---
+🏗️ 아키텍처
 
+```
+Stock Price API
+        │
+        ▼
+ Price Checker
+        │
+        ▼
+ Threshold Check
+        │
+        ▼
+ News Fetcher
+        │
+        ▼
+ Message Formatter
+        │
+        ▼
+ Discord Notifier
+```
 ---
 
 ## 🖥️ GUI 설정 편집기
