@@ -31,6 +31,7 @@ stock-news-alert/
 │   └── logger.py
 │   └── symbol_map.py
 │   └── message_formatter.py
+├── gui_config.py           # GUI 설정 편집기 (선택 실행)
 ├── .env                    # API 키 (gitignore 처리)
 ├── .env.example            # .env 템플릿 (공유용)
 ├── config.py               # 설정값
@@ -53,18 +54,40 @@ stock-news-alert/
 
 ---
 
+## 🖥️ GUI 설정 편집기
+
+`config.py` 파일의 설정값을 코드 편집 없이 **GUI 앱**으로 간편하게 수정할 수 있습니다.
+
+### 실행 방법
+
+```bash
+python gui_config.py
+```
+
+### 주요 기능
+
+| 기능 | 설명 |
+|------|------|
+| 종목 관리 | 모니터링할 주식 종목 추가 / 삭제 |
+| 임계값 설정 | 알림을 트리거할 가격 변동률(%) 조정 |
+| 설정 저장 | 변경 사항을 `config.py`에 즉시 반영 |
+
+---
+
 ## 🛠️ 기술 스택
 
 | 분류 | 사용 기술 |
 |------|-----------|
 | 언어 | Python 3.10+ |
 | 주가 조회 | [Alpha Vantage](https://www.alphavantage.co/) / [pykrx](https://github.com/sharebook-kr/pykrx) |
-| 뉴스 수집 | [NewsAPI](https://newsapi.org/) / [Naver News API](https://developers.naver.com/docs/serviceapi/search/news/news.md)|
+| 뉴스 수집 | [NewsAPI](https://newsapi.org/) / [Naver News API](https://developers.naver.com/docs/serviceapi/search/news/news.md) |
 | 알림 전송 | Discord |
+| GUI | tkinter (Python 표준 라이브러리) |
 
 ---
 
 ## 📬 메시지 예시
+
 ```
 📊 삼성전자
 - 날짜: 2026-05-30
