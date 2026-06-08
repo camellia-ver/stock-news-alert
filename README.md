@@ -14,8 +14,9 @@
 
 ```
 stock-news-alert/
-├── main.py                  # 메인 실행 파일
+├── main.py                 # 메인 실행 파일
 ├── config.py               # .env에서 설정값 로드
+├── logs/                   
 ├── stock/
 │   ├── __init__.py
 │   └── price_checker.py    # 주식 가격 조회 및 변동률 계산
