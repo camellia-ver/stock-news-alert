@@ -14,6 +14,10 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+import threading
+import urllib.request
+import json
+
 US_MAX = 25
 FONT   = "맑은 고딕"   # Windows; 다른 OS 에서는 시스템 기본 폰트로 대체됨
 
@@ -35,9 +39,34 @@ class ConfigManager(tk.Tk):
         self.alert_threshold: int = 10
         self._editing: dict = {}  # {market: old_ticker}  편집 중인 항목
 
+        self.krx_all: list = []  # (ticker, name) 전체 캐시
+        self._krx_loaded: bool = False # 로딩 완료 여부
+
         self._apply_style()
         self._build_ui()
+
+        threading.Thread(target=self._load_krx_tickers, daemon= True).start()
         self._load()
+
+    def _load_krx_tickers(self) -> None:
+        """pykrx로 KRX 전체 종목을 백그라운드에서 로드"""
+        try:
+            from pykrx import stock
+            from datetime import datetime
+    
+            today = datetime.today().strftime('%Y%m%d')
+            tickers = stock.get_market_ticker_list(today, market='ALL')
+            self.krx_all = [
+                (t, stock.get_market_ticker_name(t)) for t in tickers
+            ]
+            self._krx_loaded = True
+
+            # UI 스레드에서 상태 표시 갱신
+            self.after(0, lambda: self._set_status(
+                f'✔ KRX 종목 {len(self.krx_all)}개 로드 완료'
+            ))
+        except Exception as e:
+            self.after(0, lambda:self._set_status(f"⚠ KRX 로드 실패: {e}")))
 
     # ── 스타일 ───────────────────────────────────────────────────────────────
     def _apply_style(self) -> None:
