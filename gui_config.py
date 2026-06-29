@@ -66,7 +66,7 @@ class ConfigManager(tk.Tk):
                 f'✔ KRX 종목 {len(self.krx_all)}개 로드 완료'
             ))
         except Exception as e:
-            self.after(0, lambda:self._set_status(f"⚠ KRX 로드 실패: {e}")))
+            self.after(0, lambda:self._set_status(f"⚠ KRX 로드 실패: {e}"))
 
     # ── 스타일 ───────────────────────────────────────────────────────────────
     def _apply_style(self) -> None:
