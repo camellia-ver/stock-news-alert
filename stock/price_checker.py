@@ -134,20 +134,15 @@ class PriceChecker:
 
         for symbol, data in change_rates.items():
             if data is None:
-                result[symbol] = {'is_alert': False}
                 continue
 
             rate = data['change_rate']
-            is_alert = abs(rate) >= self.threshold
-            if is_alert:
+            if abs(rate) >= self.threshold:
                 logger.warning(
                     "%s 변동률 임계값 초과: %.2f%% (기준: ±%.1f%%)",
                     symbol, rate, self.threshold
                 )
-            result[symbol] = {
-                'date': data['date'],
-                'rate': rate,
-                'is_alert': is_alert}
+                result[symbol] = {'date': data['date'], 'rate': rate}
 
         return result
             
