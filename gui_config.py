@@ -14,10 +14,6 @@ import os
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
-import threading
-import urllib.request
-import json
-
 US_MAX = 25
 FONT   = "맑은 고딕"   # Windows; 다른 OS 에서는 시스템 기본 폰트로 대체됨
 
@@ -39,34 +35,9 @@ class ConfigManager(tk.Tk):
         self.alert_threshold: int = 10
         self._editing: dict = {}  # {market: old_ticker}  편집 중인 항목
 
-        self.krx_all: list = []  # (ticker, name) 전체 캐시
-        self._krx_loaded: bool = False # 로딩 완료 여부
-
         self._apply_style()
         self._build_ui()
-
-        threading.Thread(target=self._load_krx_tickers, daemon= True).start()
         self._load()
-
-    def _load_krx_tickers(self) -> None:
-        """pykrx로 KRX 전체 종목을 백그라운드에서 로드"""
-        try:
-            from pykrx import stock
-            from datetime import datetime
-    
-            today = datetime.today().strftime('%Y%m%d')
-            tickers = stock.get_market_ticker_list(today, market='ALL')
-            self.krx_all = [
-                (t, stock.get_market_ticker_name(t)) for t in tickers
-            ]
-            self._krx_loaded = True
-
-            # UI 스레드에서 상태 표시 갱신
-            self.after(0, lambda: self._set_status(
-                f'✔ KRX 종목 {len(self.krx_all)}개 로드 완료'
-            ))
-        except Exception as e:
-            self.after(0, lambda:self._set_status(f"⚠ KRX 로드 실패: {e}"))
 
     # ── 스타일 ───────────────────────────────────────────────────────────────
     def _apply_style(self) -> None:
@@ -198,21 +169,21 @@ class ConfigManager(tk.Tk):
         # 수정 확정: 주황 배경 → 어두운 글자(#1A1A1A)로 대비비 4.8:1 확보
         edit_btn = self._btn(btn_row, "✎ 수정 확정",
                              lambda m=market: self._commit_edit(m),
-                             "#1A1A1A")
+                             "#E65100", fg="#1A1A1A")
         edit_btn.config(state="disabled", disabledforeground="#7B3A00")
         edit_btn.pack(side="left", padx=(0, 6))
 
         # 삭제: 진한 빨강 배경 → 아이보리 화이트(#FFF3E0)로 눈부심 감소
         del_btn = self._btn(btn_row, "− 삭제",
                             lambda m=market: self._delete(m),
-                            "#FFF3E0")
+                            "#B71C1C", fg="#FFF3E0")
         del_btn.config(state="disabled", disabledforeground="#EF9A9A")
         del_btn.pack(side="left", padx=(0, 6))
 
         # 취소: 회색 배경 → 연한 회색(#F5F5F5)으로 순백 대비 눈 부담 경감
         cancel_btn = self._btn(btn_row, "취소",
                                lambda m=market: self._cancel_edit(m),
-                               "#F5F5F5")
+                               "#757575", fg="#F5F5F5")
         cancel_btn.config(state="disabled", disabledforeground="#BDBDBD")
         cancel_btn.pack(side="left")
 
