@@ -16,7 +16,8 @@
 stock-news-alert/
 ├── main.py                 # 메인 실행 파일
 ├── config.py               # .env에서 설정값 로드
-├── logs/                   
+├── logs/ 
+├── stock-list              # 주식 목록 리스트 json 파일                  
 ├── stock/
 │   ├── __init__.py
 │   └── price_checker.py    # 주식 가격 조회 및 변동률 계산
@@ -133,15 +134,4 @@ NAVER_APPLICATION_CLIENT_SECRET=your_naver_application_client_secret
 🧠 AI 인사이트
 최근 반도체 업황 둔화 우려와 환율 변동이 겹치며 단기 하락세가 나타난 것으로 보입니다.
 다만 파운드리 신규 수주 소식이 긍정적 요인으로 언급되고 있어 중장기 전망은 엇갈리는 분위기입니다.
-
-📊 삼성전자
-- 날짜: 2026-05-30
-- 변동률: -1.45%
-
-📰 참고 뉴스
-1. [제목]
-   - 링크: ...
-
-2. [제목]
-   - 링크: ...
 ```

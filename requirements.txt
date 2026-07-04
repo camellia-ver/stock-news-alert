@@ -4,3 +4,4 @@ newsapi-python
 pykrx
 pandas
 google-genai
+finance-datareader
