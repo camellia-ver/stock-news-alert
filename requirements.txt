@@ -3,3 +3,4 @@ python-dotenv
 newsapi-python
 pykrx
 pandas
+google-genai
