@@ -10,7 +10,6 @@ from settings import DATA_GO_KR_SERVICE_KEY
 
 logger = get_logger(__name__)
 
-US_MAX = 25
 FONT   = "맑은 고딕"   # Windows; 다른 OS 에서는 시스템 기본 폰트로 대체됨
 
 CACHE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -119,11 +118,7 @@ class ConfigManager(tk.Tk):
         info_row = tk.Frame(parent, bg="#ECEFF1")
         info_row.pack(fill="x", padx=10, pady=(8, 2))
 
-        count_lbl = None
         if market == "US":
-            count_lbl = tk.Label(info_row, text=f"0 / {US_MAX}개",
-                                  bg="#ECEFF1", font=(FONT, 10), fg="#555555")
-            count_lbl.pack(side="right")
             tk.Label(info_row, text="US 종목 목록", bg="#ECEFF1",
                      font=(FONT, 10, "bold"), fg="#37474F").pack(side="left")
         else:
@@ -226,7 +221,6 @@ class ConfigManager(tk.Tk):
             "name_var":     name_var,
             "ticker_entry": ticker_cb,
             "name_entry":   name_cb,
-            "count_lbl":    count_lbl,
             "add_btn":      add_btn,
             "edit_btn":     edit_btn,
             "del_btn":      del_btn,
@@ -576,10 +570,6 @@ class ConfigManager(tk.Tk):
             tree.delete(*tree.get_children())
             for ticker, name in self.stock_tickers.get(m, {}).items():
                 tree.insert("", "end", iid=ticker, values=(ticker, name))
-            if w["count_lbl"]:
-                n  = len(self.stock_tickers.get(m, {}))
-                fg = "#B71C1C" if n >= US_MAX else "#555555"
-                w["count_lbl"].config(text=f"{n} / {US_MAX}개", fg=fg)
 
     def _set_status(self, msg: str) -> None:
         self.status_var.set(msg)
@@ -646,15 +636,6 @@ class ConfigManager(tk.Tk):
             return
 
         tickers = self.stock_tickers.setdefault(market, {})
-
-        if market == "US" and len(tickers) >= US_MAX:
-            messagebox.showwarning(
-                "제한 초과",
-                f"US 종목은 최대 {US_MAX}개까지 추가할 수 있습니다.\n"
-                f"현재 {len(tickers)}개 등록됨.",
-                parent=self,
-            )
-            return
 
         if ticker in tickers:
             messagebox.showwarning("중복 오류",

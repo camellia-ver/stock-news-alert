@@ -2,8 +2,8 @@
 import time
 from datetime import datetime, timedelta
 
-import requests
 from pykrx import stock
+import FinanceDataReader as fdr
 
 import config
 from settings import ALPHA_VANTAGE_API_KEY
@@ -14,7 +14,6 @@ logger = get_logger(__name__)
 
 class PriceChecker:
     def __init__(self):
-        self._api_key = ALPHA_VANTAGE_API_KEY
         self.stock_tickers = config.STOCK_TICKERS
         self.threshold = config.ALERT_THRESHOLD
 
@@ -68,27 +67,27 @@ class PriceChecker:
         return result
 
     def _get_us_close_prices(self) -> dict[str, dict | None]:
-        '''Alpha Vantage로 미국 주식 종가 조회'''
+        '''FinanceDataReader로 미국 주식 종가 조회'''
         result = {}
+
+        # 최근 영업일 포함 넉넉하게 조회 (주말/공휴일 대비 10일)
+        start_date = (datetime.now() - timedelta(days=10)).strftime('%Y-%m-%d')
 
         for ticker, name in self.stock_tickers.get('US', {}).items():
             try:
-                url = (
-                    f'https://www.alphavantage.co/query'
-                    f'?function=TIME_SERIES_DAILY&symbol={ticker}&apikey={self._api_key}'
-                )
-                r = requests.get(url, timeout=10)
-                r.raise_for_status()
-                json_data = r.json()
+                df = fdr.DataReader(ticker, start_date)
 
-                time_series = json_data['Time Series (Daily)']
-                latest_two = sorted(time_series.keys(), reverse=True)[:2]
-                yesterday, two_days_ago = latest_two
+                if df.empty or len(df) < 2:
+                    raise ValueError(f'데이터 부족 (rows={len(df)})')
+
+                latest_two = df.sort_index(ascending=False).iloc[:2]
+                yesterday = latest_two.index[0]
+                two_days_ago = latest_two.index[1]
 
                 result[name] = {
                     'yesterday_date': yesterday,
-                    'yesterday_close': float(time_series[yesterday]['4. close']),
-                    'two_days_ago_close': float(time_series[two_days_ago]['4. close'])
+                    'yesterday_close': float(latest_two.loc[yesterday]['Close']),
+                    'two_days_ago_close': float(latest_two.loc[two_days_ago]['Close'])
                 }
 
                 logger.debug("%s US 조회 완료 (종가: %s)", name, result[name]['yesterday_close'])
@@ -96,8 +95,6 @@ class PriceChecker:
                 logger.error("%s US 조회 실패: %s", name, e, exc_info=True)
                 result[name] = None
             
-            time.sleep(12)
-
         return result
 
     @staticmethod

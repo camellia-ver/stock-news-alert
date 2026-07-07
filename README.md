@@ -105,7 +105,8 @@ python gui_config.py
 | 분류 | 사용 기술 |
 |------|-----------|
 | 언어 | Python 3.10+ |
-| 주가 조회 | [Alpha Vantage](https://www.alphavantage.co/) / [pykrx](https://github.com/sharebook-kr/pykrx) |
+| 주가 조회 | [FinanceDataReader](https://github.com/financedata/financedatareader) / [pykrx](https://github.com/sharebook-kr/pykrx) |
+| 한국 주식 목록 수집 | [Open API - 금융위원회_KRX상장종목정보](https://www.data.go.kr/tcs/dss/selectApiDataDetailView.do?publicDataPk=15094775)
 | 뉴스 수집 | [NewsAPI](https://newsapi.org/) / [Naver News API](https://developers.naver.com/docs/serviceapi/search/news/news.md) |
 | 뉴스 요약/인사이트 | [Gemini API](https://ai.google.dev/) |
 | 알림 전송 | Discord |
@@ -119,11 +120,11 @@ python gui_config.py
 
 ```
 GEMINI_API_KEY=your_gemini_api_key_here
-ALPHA_VANTAGE_API_KEY=your_key_here
 NEWS_API_KEY=your_key_here
 DISCORD_WEBHOOK_URL=your_webhook_url_here
 NAVER_APPLICATION_CLIENT_ID=your_naver_applicaiton_client_id
 NAVER_APPLICATION_CLIENT_SECRET=your_naver_application_client_secret
+DATA_GO_KR_SERVICE_KEY=your_data_go_kr_service_key
 ```
 
 ---
