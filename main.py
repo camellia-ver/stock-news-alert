@@ -11,7 +11,7 @@ if __name__ == '__main__':
         news = NewsFetcher().get_news()
         logger.info(f"뉴스 {len(news)}개 수집 완료")
         discord_sender = sender.Sender()
-        discord_sender.sending_discord(news)
+        discord_sender.send_discord(news)
     except Exception as e:
         logger.error(f"실행 중 오류 발생: {e}")
         raise
