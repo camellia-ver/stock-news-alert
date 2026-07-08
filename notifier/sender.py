@@ -37,7 +37,7 @@ class Sender:
         for chunk in self._split_message(all_message):
             self._send_chuck(chunk)
 
-    def _send_chuck(self, chuck, max_retries=3):
+    def _send_chuck(self, chunk, max_retries=3):
         for attempt in range(max_retries):
             try:
                 response = requests.post(self.url, json={'content': chunk}, timeout=10)
